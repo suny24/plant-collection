@@ -173,6 +173,23 @@ select:disabled { background-color: #f5f5f5; color: #bbb; }
 var SHEET_ID = '1Xd-wcmfnIVB-qMf1_I14_BSvFAggoxe8MODK713ceyc';
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbwK-9OxSDA3QQB0DV1BpBEOnLi_iTXgqtaAWqenspFbZ2eW2B2NRK6oLWVGtaRlHXla/exec';
 
+// JSONP call to bypass CORS
+var jsonpCallbacks = {};
+var jsonpCounter = 0;
+function jsonpCall(url, cb) {
+  var cbName = 'jsonpCb_' + (++jsonpCounter);
+  jsonpCallbacks[cbName] = function(data) {
+    delete jsonpCallbacks[cbName];
+    document.head.removeChild(script);
+    cb(data);
+  };
+  window[cbName] = jsonpCallbacks[cbName];
+  var script = document.createElement('script');
+  script.src = url + (url.indexOf('?')>=0 ? '&' : '?') + 'callback=' + cbName;
+  script.onerror = function() { toast('Connection error','err'); };
+  document.head.appendChild(script);
+}
+
 var PLANT_DATA={}, myCollection=[], myQty={};
 var curFam='', curGen='';
 
@@ -226,19 +243,18 @@ function loadPlantData(cb) {
     .catch(function(e){ toast('Sheet load error: '+e,'err'); });
 }
 
-// Load My Collection from GAS
+// Load My Collection from GAS via JSONP
 function loadMyCollection(cb){
-  fetch(GAS_URL + '?action=getMyCollectionWithQty')
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      myCollection=[]; myQty={};
+  jsonpCall(GAS_URL + '?action=getMyCollectionWithQty', function(data){
+    myCollection=[]; myQty={};
+    if (Array.isArray(data)) {
       data.forEach(function(row){
         var key=row[0]+'||'+row[1]+'||'+row[2];
         myCollection.push(key); myQty[key]=Number(row[3])||0;
       });
-      if(cb) cb();
-    })
-    .catch(function(e){ toast('Collection load error','err'); });
+    }
+    if(cb) cb();
+  });
 }
 
 function isOwned(f,g,v){ return myCollection.indexOf(f+'||'+g+'||'+v)>=0; }
@@ -347,14 +363,14 @@ function esc(s){ return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function toggle(variant,add){
   var fn=add?'addToCollection':'removeFromCollection';
   var url=GAS_URL+'?action='+fn+'&family='+encodeURIComponent(curFam)+'&genus='+encodeURIComponent(curGen)+'&variant='+encodeURIComponent(variant);
-  fetch(url).then(function(r){ return r.json(); }).then(function(res){
+  jsonpCall(url, function(res){
     if(res==='exists'){ toast('Already in collection!','err'); return; }
     var key=curFam+'||'+curGen+'||'+variant;
     if(add){ myCollection.push(key); myQty[key]=0; toast('✅ Added: '+variant,'ok'); }
     else{ myCollection.splice(myCollection.indexOf(key),1); delete myQty[key]; toast('❌ Removed','err'); }
     renderVariants();
     renderSummary();
-  }).catch(function(){ toast('Error','err'); });
+  });
 }
 
 function changeQty(variant,delta){
@@ -362,7 +378,7 @@ function changeQty(variant,delta){
   var nq=Math.max(0,(myQty[key]||0)+delta); myQty[key]=nq;
   var el=document.getElementById('q_'+encId(variant)); if(el) el.textContent=nq;
   var url=GAS_URL+'?action=updateQty&family='+encodeURIComponent(curFam)+'&genus='+encodeURIComponent(curGen)+'&variant='+encodeURIComponent(variant)+'&qty='+nq;
-  fetch(url).catch(function(){});
+  jsonpCall(url, function(){});
 }
 
 function renderCollection(){
@@ -390,7 +406,7 @@ function changeQtyCol(fam,gen,variant,delta,btn){
   var nq=Math.max(0,(myQty[key]||0)+delta); myQty[key]=nq;
   btn.parentElement.querySelector('.qty-val').textContent=nq;
   var url=GAS_URL+'?action=updateQty&family='+encodeURIComponent(fam)+'&genus='+encodeURIComponent(gen)+'&variant='+encodeURIComponent(variant)+'&qty='+nq;
-  fetch(url).catch(function(){});
+  jsonpCall(url, function(){});
 }
 
 window.onload=init;
