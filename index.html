@@ -207,7 +207,10 @@ function loadPlantData(cb) {
   fetch(url)
     .then(function(r){ return r.text(); })
     .then(function(text){
-      var json = JSON.parse(text.replace(/.*\(|\);?\s*$/g,''));
+      // Google Sheets wraps response in /*O_o*/ google.visualization.Query.setResponse(...)
+      var jsonStr = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
+      if (!jsonStr) { toast('Sheet parse error','err'); return; }
+      var json = JSON.parse(jsonStr[1]);
       var rows = json.table.rows;
       var data = {};
       rows.forEach(function(row){
