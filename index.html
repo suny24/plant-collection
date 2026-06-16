@@ -13,28 +13,20 @@ body {
   height: 100%; overflow: hidden; display: flex; flex-direction: column;
 }
 
-/* HEADER - fixed */
-header { 
-  background: #2E7D32; color: white; 
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-}
+/* HEADER */
+header { background: #2E7D32; color: white; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
 .header-inner { max-width: 480px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
 header span { font-size: 24px; flex-shrink: 0; }
 header h1 { font-size: 18px; font-weight: 800; }
 
-/* TABS - fixed */
+/* TABS */
 .tabs { background: #1B5E20; flex-shrink: 0; }
 .tabs-inner { max-width: 480px; margin: 0 auto; display: flex; }
 .tab { flex: 1; padding: 11px 4px; text-align: center; color: #A5D6A7; cursor: pointer; font-size: 13px; font-weight: bold; border-bottom: 3px solid transparent; }
 .tab.active { color: white; border-bottom-color: #69F0AE; background: rgba(255,255,255,0.1); }
 
-/* OVERALL PROGRESS - fixed below tabs */
-.overall-fixed {
-  background: white; flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  display: none;
-}
+/* OVERALL PROGRESS */
+.overall-fixed { background: white; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: none; }
 .overall-fixed.show { display: block; }
 .overall-inner { max-width: 480px; margin: 0 auto; padding: 12px 16px; }
 .overall-inner h3 { color: #1B5E20; font-size: 16px; font-weight: 900; margin-bottom: 10px; text-align: center; }
@@ -48,7 +40,7 @@ header h1 { font-size: 18px; font-weight: 800; }
 .progress-bar-wrap { background: #eee; border-radius: 10px; height: 8px; margin-top: 8px; }
 .progress-bar { background: #2E7D32; height: 8px; border-radius: 10px; transition: width 0.4s; }
 
-/* SCROLLABLE CONTENT AREA */
+/* SCROLLABLE */
 .content-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .page { max-width: 480px; margin: 0 auto; padding: 12px; }
 
@@ -78,7 +70,7 @@ select:disabled { background-color: #f5f5f5; color: #bbb; }
 .qty-plus { background: #C8E6C9; color: #2E7D32; }
 .qty-val { min-width: 26px; text-align: center; font-weight: bold; font-size: 15px; color: #1B5E20; }
 
-/* SUMMARY LIST */
+/* SUMMARY */
 .sum-card { background: white; border-radius: 10px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.07); }
 .sum-card h3 { color: #1B5E20; font-size: 15px; font-weight: 800; margin-bottom: 10px; border-bottom: 2px solid #E8F5E9; padding-bottom: 8px; text-align: center; }
 .sum-row { display: flex; justify-content: center; align-items: center; padding: 7px 0; border-bottom: 1px solid #f5f5f5; gap: 16px; }
@@ -122,7 +114,6 @@ select:disabled { background-color: #f5f5f5; color: #bbb; }
   </div>
 </div>
 
-<!-- OVERALL PROGRESS FIXED -->
 <div class="overall-fixed" id="overallFixed">
   <div class="overall-inner">
     <h3>📊 Overall Progress</h3>
@@ -134,7 +125,6 @@ select:disabled { background-color: #f5f5f5; color: #bbb; }
   </div>
 </div>
 
-<!-- SCROLLABLE CONTENT -->
 <div class="content-area">
 
   <!-- SUMMARY TAB -->
@@ -149,11 +139,12 @@ select:disabled { background-color: #f5f5f5; color: #bbb; }
     <div id="loading" class="loading">⏳ Loading...</div>
     <div id="selectors" class="hidden">
       <div class="section"><label>1. Family</label><select id="selFamily" onchange="onFamilyChange()"><option value="">— Select Family —</option></select></div>
-      <div class="section"><label>2. Genus / Type</label><select id="selGenus" onchange="onGenusChange()" disabled><option value="">— Select Genus —</option></select></div>
+      <div class="section"><label>2. Genus</label><select id="selGenus" onchange="onGenusChange()" disabled><option value="">— Select Genus —</option></select></div>
+      <div class="section"><label>3. Species</label><select id="selSpecies" onchange="onSpeciesChange()" disabled><option value="">— Select Species —</option></select></div>
     </div>
     <div id="statsBar" class="stats-bar hidden"></div>
     <div class="variants-wrap hidden" id="variantsWrap">
-      <div class="variants-label">3. Variants — tap ✅ to add / ❌ to remove</div>
+      <div class="variants-label">4. Variants — tap ✅ to add / ❌ to remove</div>
       <div id="variantsList"></div>
     </div>
   </div>
@@ -173,9 +164,8 @@ select:disabled { background-color: #f5f5f5; color: #bbb; }
 var SHEET_ID = '1OIEVRcgKVT2ch07iZdr5xmo4KozOM2tyvsMAFcaKQC8';
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbyUx0TJNC_Bcla1sYbVKj_Ru0UFJ0JZyvMv1wCGF4MytgBg_EYNe4U3PZnd_K9VTXLuLg/exec';
 
-// JSONP call to bypass CORS
-var jsonpCallbacks = {};
-var jsonpCounter = 0;
+// JSONP
+var jsonpCallbacks = {}, jsonpCounter = 0;
 function jsonpCall(url, cb) {
   var cbName = 'jsonpCb_' + (++jsonpCounter);
   jsonpCallbacks[cbName] = function(data) {
@@ -190,226 +180,250 @@ function jsonpCall(url, cb) {
   document.head.appendChild(script);
 }
 
-var PLANT_DATA={}, myCollection=[], myQty={};
-var curFam='', curGen='';
+// PLANT_DATA structure: { Family: { Genus: { Species: [Variant, ...] } } }
+var PLANT_DATA = {}, myCollection = [], myQty = {};
+var curFam = '', curGen = '', curSp = '';
 
-function showTab(tab){
+function showTab(tab) {
   ['summary','selector','collection'].forEach(function(t,i){
-    document.getElementById('tab-'+t).classList.toggle('hidden',t!==tab);
-    document.querySelectorAll('.tab')[i].classList.toggle('active',t===tab);
+    document.getElementById('tab-'+t).classList.toggle('hidden', t!==tab);
+    document.querySelectorAll('.tab')[i].classList.toggle('active', t===tab);
   });
-  // Show overall fixed only on summary
   document.getElementById('overallFixed').classList.toggle('show', tab==='summary');
   if(tab==='collection') renderCollection();
 }
 
-function toast(msg,type){
-  var el=document.getElementById('toast');
-  el.textContent=msg; el.className='toast show '+(type||'');
-  setTimeout(function(){ el.className='toast'; },2500);
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'toast show ' + (type||'');
+  setTimeout(function(){ el.className = 'toast'; }, 2500);
 }
 
-// Call Google Apps Script
-function gasCall(fn, args, cb) {
-  var url = GAS_URL + '?action=' + fn + '&args=' + encodeURIComponent(JSON.stringify(args||[]));
-  fetch(url)
-    .then(function(r){ return r.json(); })
-    .then(cb)
-    .catch(function(e){ toast('Error: '+e,'err'); });
-}
-
-// Load plant data from Google Sheets public JSON
+// Load plant data — columns: Family(0), Genus(1), Species(2), Variety(3)
 function loadPlantData(cb) {
   var url = 'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Database';
   fetch(url)
     .then(function(r){ return r.text(); })
     .then(function(text){
-      // Google Sheets wraps response in /*O_o*/ google.visualization.Query.setResponse(...)
       var jsonStr = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
       if (!jsonStr) { toast('Sheet parse error','err'); return; }
       var json = JSON.parse(jsonStr[1]);
       var rows = json.table.rows;
       var data = {};
       rows.forEach(function(row){
-        if (!row.c || !row.c[0] || !row.c[1] || !row.c[2]) return;
-        var fam = row.c[0].v, gen = row.c[1].v, vari = row.c[2].v;
-        if (!fam||!gen||!vari) return;
-        if (!data[fam]) data[fam]={};
-        if (!data[fam][gen]) data[fam][gen]=[];
-        data[fam][gen].push(vari);
+        if (!row.c || !row.c[0] || !row.c[1] || !row.c[2] || !row.c[3]) return;
+        var fam = row.c[0].v, gen = row.c[1].v, sp = row.c[2].v, vari = row.c[3].v;
+        if (!fam||!gen||!sp||!vari) return;
+        if (!data[fam]) data[fam] = {};
+        if (!data[fam][gen]) data[fam][gen] = {};
+        if (!data[fam][gen][sp]) data[fam][gen][sp] = [];
+        data[fam][gen][sp].push(vari);
       });
       cb(data);
     })
     .catch(function(e){ toast('Sheet load error: '+e,'err'); });
 }
 
-// Load My Collection from GAS via JSONP
-function loadMyCollection(cb){
+// Collection key: Family||Genus||Species||Variant
+function loadMyCollection(cb) {
   jsonpCall(GAS_URL + '?action=getMyCollectionWithQty', function(data){
-    myCollection=[]; myQty={};
+    myCollection = []; myQty = {};
     if (Array.isArray(data)) {
       data.forEach(function(row){
-        var key=row[0]+'||'+row[1]+'||'+row[2];
-        myCollection.push(key); myQty[key]=Number(row[3])||0;
+        var key = row[0]+'||'+row[1]+'||'+row[2]+'||'+row[3];
+        myCollection.push(key); myQty[key] = Number(row[4])||0;
       });
     }
     if(cb) cb();
   });
 }
 
-function isOwned(f,g,v){ return myCollection.indexOf(f+'||'+g+'||'+v)>=0; }
-function getQty(f,g,v){ return myQty[f+'||'+g+'||'+v]||0; }
+function isOwned(f,g,sp,v){ return myCollection.indexOf(f+'||'+g+'||'+sp+'||'+v)>=0; }
+function getQty(f,g,sp,v){ return myQty[f+'||'+g+'||'+sp+'||'+v]||0; }
 
-function init(){
+function init() {
   loadPlantData(function(data){
     PLANT_DATA = data;
-    // Populate family dropdown
-    var sel=document.getElementById('selFamily');
+    var sel = document.getElementById('selFamily');
     Object.keys(data).sort().forEach(function(f){
-      var o=document.createElement('option'); o.value=f; o.textContent=f; sel.appendChild(o);
+      var o = document.createElement('option'); o.value = f; o.textContent = f; sel.appendChild(o);
     });
     document.getElementById('loading').classList.add('hidden');
     document.getElementById('selectors').classList.remove('hidden');
-
-    loadMyCollection(function(){
-      renderSummary();
-    });
+    loadMyCollection(function(){ renderSummary(); });
   });
 }
 
-function renderSummary(){
-  var myMap={};
-  myCollection.forEach(function(k){ myMap[k]=true; });
-  var totalDB=0, totalOwned=myCollection.length, byGenus=[], byFamily={};
+function renderSummary() {
+  var myMap = {};
+  myCollection.forEach(function(k){ myMap[k] = true; });
+
+  var totalDB = 0, totalOwned = myCollection.length;
+  var byFamily = {}, byGenus = {}, bySpecies = {};
+
   Object.keys(PLANT_DATA).forEach(function(fam){
     Object.keys(PLANT_DATA[fam]).forEach(function(gen){
-      var vars=PLANT_DATA[fam][gen]; totalDB+=vars.length;
-      var owned=vars.filter(function(v){ return myMap[fam+'||'+gen+'||'+v]; }).length;
-      byGenus.push({gen:gen,total:vars.length,owned:owned});
-      byFamily[fam]=byFamily[fam]||{total:0,owned:0};
-      byFamily[fam].total+=vars.length; byFamily[fam].owned+=owned;
+      Object.keys(PLANT_DATA[fam][gen]).forEach(function(sp){
+        var vars = PLANT_DATA[fam][gen][sp];
+        totalDB += vars.length;
+        var owned = vars.filter(function(v){ return myMap[fam+'||'+gen+'||'+sp+'||'+v]; }).length;
+
+        // By Family
+        byFamily[fam] = byFamily[fam]||{total:0,owned:0};
+        byFamily[fam].total += vars.length; byFamily[fam].owned += owned;
+
+        // By Genus
+        byGenus[gen] = byGenus[gen]||{total:0,owned:0};
+        byGenus[gen].total += vars.length; byGenus[gen].owned += owned;
+
+        // By Species
+        bySpecies[sp] = bySpecies[sp]||{total:0,owned:0};
+        bySpecies[sp].total += vars.length; bySpecies[sp].owned += owned;
+      });
     });
   });
-  var pct=totalDB?Math.round(totalOwned/totalDB*100):0;
 
-  // Update fixed overall
-  document.getElementById('ovTotal').textContent=totalDB;
-  document.getElementById('ovOwned').textContent=totalOwned;
-  document.getElementById('ovPending').textContent=totalDB-totalOwned;
-  document.getElementById('ovPct').textContent=pct+'%';
-  document.getElementById('ovBar').style.width=pct+'%';
+  var pct = totalDB ? Math.round(totalOwned/totalDB*100) : 0;
+  document.getElementById('ovTotal').textContent = totalDB;
+  document.getElementById('ovOwned').textContent = totalOwned;
+  document.getElementById('ovPending').textContent = totalDB - totalOwned;
+  document.getElementById('ovPct').textContent = pct + '%';
+  document.getElementById('ovBar').style.width = pct + '%';
   document.getElementById('overallFixed').classList.add('show');
 
-  // By Genus
-  var html='<div class="sum-card"><h3>🌿 By Genus</h3>';
-  byGenus.sort(function(a,b){ return b.owned-a.owned||a.gen.localeCompare(b.gen); }).forEach(function(g){
-    var p=g.total?Math.round(g.owned/g.total*100):0;
-    html+='<div class="sum-row"><span class="sum-label">'+g.gen+'</span><span class="sum-val'+(g.owned==0?' zero':'')+'">'+g.owned+'/'+g.total+' · '+p+'%</span></div>';
-  });
-  html+='</div>';
+  function makeCard(title, obj, sortByOwned) {
+    var html = '<div class="sum-card"><h3>' + title + '</h3>';
+    var keys = Object.keys(obj);
+    if (sortByOwned) {
+      keys.sort(function(a,b){ return b.owned - a.owned || a.localeCompare(b); });
+    } else {
+      keys.sort();
+    }
+    keys.forEach(function(k){
+      var d = obj[k], p = d.total ? Math.round(d.owned/d.total*100) : 0;
+      html += '<div class="sum-row"><span class="sum-label">'+k+'</span><span class="sum-val'+(d.owned==0?' zero':'')+'">'+d.owned+'/'+d.total+' · '+p+'%</span></div>';
+    });
+    html += '</div>';
+    return html;
+  }
 
-  // By Family
-  html+='<div class="sum-card"><h3>🌱 By Family</h3>';
-  Object.keys(byFamily).sort().forEach(function(fam){
-    var f=byFamily[fam], p=f.total?Math.round(f.owned/f.total*100):0;
-    html+='<div class="sum-row"><span class="sum-label">'+fam+'</span><span class="sum-val'+(f.owned==0?' zero':'')+'">'+f.owned+'/'+f.total+' · '+p+'%</span></div>';
-  });
-  html+='</div>';
+  var html = makeCard('🌿 By Genus', byGenus, true);
+  html += makeCard('🔬 By Species', bySpecies, false);
+  html += makeCard('🌱 By Family', byFamily, false);
 
-  document.getElementById('summaryContent').innerHTML=html;
+  document.getElementById('summaryContent').innerHTML = html;
 }
 
-function onFamilyChange(){
-  curFam=document.getElementById('selFamily').value;
-  var gs=document.getElementById('selGenus');
-  gs.innerHTML='<option value="">— Select Genus —</option>'; gs.disabled=!curFam; curGen='';
+function onFamilyChange() {
+  curFam = document.getElementById('selFamily').value;
+  var gs = document.getElementById('selGenus');
+  gs.innerHTML = '<option value="">— Select Genus —</option>'; gs.disabled = !curFam; curGen = '';
+  var ss = document.getElementById('selSpecies');
+  ss.innerHTML = '<option value="">— Select Species —</option>'; ss.disabled = true; curSp = '';
   document.getElementById('variantsWrap').classList.add('hidden');
   document.getElementById('statsBar').classList.add('hidden');
-  if(!curFam) return;
+  if (!curFam) return;
   Object.keys(PLANT_DATA[curFam]).sort().forEach(function(g){
-    var o=document.createElement('option'); o.value=g; o.textContent=g; gs.appendChild(o);
+    var o = document.createElement('option'); o.value = g; o.textContent = g; gs.appendChild(o);
   });
 }
 
-function onGenusChange(){
-  curGen=document.getElementById('selGenus').value;
-  if(!curGen){ document.getElementById('variantsWrap').classList.add('hidden'); return; }
+function onGenusChange() {
+  curGen = document.getElementById('selGenus').value;
+  var ss = document.getElementById('selSpecies');
+  ss.innerHTML = '<option value="">— Select Species —</option>'; ss.disabled = !curGen; curSp = '';
+  document.getElementById('variantsWrap').classList.add('hidden');
+  document.getElementById('statsBar').classList.add('hidden');
+  if (!curGen) return;
+  Object.keys(PLANT_DATA[curFam][curGen]).sort().forEach(function(sp){
+    var o = document.createElement('option'); o.value = sp; o.textContent = sp; ss.appendChild(o);
+  });
+}
+
+function onSpeciesChange() {
+  curSp = document.getElementById('selSpecies').value;
+  if (!curSp) { document.getElementById('variantsWrap').classList.add('hidden'); return; }
   renderVariants();
 }
 
-function renderVariants(){
-  if(!curFam||!curGen) return;
-  var variants=(PLANT_DATA[curFam]&&PLANT_DATA[curFam][curGen])||[];
-  var owned=variants.filter(function(v){ return isOwned(curFam,curGen,v); }).length;
-  var pct=variants.length?Math.round(owned/variants.length*100):0;
+function renderVariants() {
+  if (!curFam||!curGen||!curSp) return;
+  var variants = (PLANT_DATA[curFam]&&PLANT_DATA[curFam][curGen]&&PLANT_DATA[curFam][curGen][curSp])||[];
+  var owned = variants.filter(function(v){ return isOwned(curFam,curGen,curSp,v); }).length;
+  var pct = variants.length ? Math.round(owned/variants.length*100) : 0;
   document.getElementById('statsBar').classList.remove('hidden');
-  document.getElementById('statsBar').innerHTML='<b>'+curGen+'</b> — Owned: <b>'+owned+'</b>/'+variants.length+
+  document.getElementById('statsBar').innerHTML = '<b>'+curSp+'</b> — Owned: <b>'+owned+'</b>/'+variants.length+
     '<div class="progress-bar-wrap2"><div class="progress-bar2" style="width:'+pct+'%"></div></div>';
-  var html=!variants.length?'<div class="no-variants">No variants found</div>':'';
+  var html = !variants.length ? '<div class="no-variants">No variants found</div>' : '';
   variants.forEach(function(v){
-    var o=isOwned(curFam,curGen,v), qty=getQty(curFam,curGen,v);
-    html+='<div class="variant-row'+(o?' owned':'')+'"><span class="vname">'+(o?'✅ ':'')+v+'</span>';
-    if(o){ html+='<div class="qty-wrap"><button class="qty-btn qty-minus" onclick="changeQty(\''+esc(v)+'\',-1)">−</button><span class="qty-val" id="q_'+encId(v)+'">'+qty+'</span><button class="qty-btn qty-plus" onclick="changeQty(\''+esc(v)+'\',1)">+</button></div><button class="btn btn-remove" onclick="toggle(\''+esc(v)+'\',false)">❌</button>'; }
-    else{ html+='<button class="btn btn-add" onclick="toggle(\''+esc(v)+'\',true)">✅ Add</button>'; }
-    html+='</div>';
+    var o = isOwned(curFam,curGen,curSp,v), qty = getQty(curFam,curGen,curSp,v);
+    html += '<div class="variant-row'+(o?' owned':'')+'"><span class="vname">'+(o?'✅ ':'')+v+'</span>';
+    if(o){
+      html += '<div class="qty-wrap"><button class="qty-btn qty-minus" onclick="changeQty(\''+esc(v)+'\',-1)">−</button><span class="qty-val" id="q_'+encId(v)+'">'+qty+'</span><button class="qty-btn qty-plus" onclick="changeQty(\''+esc(v)+'\',1)">+</button></div>';
+      html += '<button class="btn btn-remove" onclick="toggle(\''+esc(v)+'\',false)">❌</button>';
+    } else {
+      html += '<button class="btn btn-add" onclick="toggle(\''+esc(v)+'\',true)">✅ Add</button>';
+    }
+    html += '</div>';
   });
-  document.getElementById('variantsList').innerHTML=html;
+  document.getElementById('variantsList').innerHTML = html;
   document.getElementById('variantsWrap').classList.remove('hidden');
 }
 
 function encId(s){ return s.replace(/[^a-zA-Z0-9]/g,'_'); }
 function esc(s){ return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 
-function toggle(variant,add){
-  var fn=add?'addToCollection':'removeFromCollection';
-  var url=GAS_URL+'?action='+fn+'&family='+encodeURIComponent(curFam)+'&genus='+encodeURIComponent(curGen)+'&variant='+encodeURIComponent(variant);
+function toggle(variant, add) {
+  var fn = add ? 'addToCollection' : 'removeFromCollection';
+  var url = GAS_URL+'?action='+fn+'&family='+encodeURIComponent(curFam)+'&genus='+encodeURIComponent(curGen)+'&species='+encodeURIComponent(curSp)+'&variant='+encodeURIComponent(variant);
   jsonpCall(url, function(res){
     if(res==='exists'){ toast('Already in collection!','err'); return; }
-    var key=curFam+'||'+curGen+'||'+variant;
+    var key = curFam+'||'+curGen+'||'+curSp+'||'+variant;
     if(add){ myCollection.push(key); myQty[key]=0; toast('✅ Added: '+variant,'ok'); }
-    else{ myCollection.splice(myCollection.indexOf(key),1); delete myQty[key]; toast('❌ Removed','err'); }
+    else { myCollection.splice(myCollection.indexOf(key),1); delete myQty[key]; toast('❌ Removed','err'); }
     renderVariants();
     renderSummary();
   });
 }
 
-function changeQty(variant,delta){
-  var key=curFam+'||'+curGen+'||'+variant;
-  var nq=Math.max(0,(myQty[key]||0)+delta); myQty[key]=nq;
-  var el=document.getElementById('q_'+encId(variant)); if(el) el.textContent=nq;
-  var url=GAS_URL+'?action=updateQty&family='+encodeURIComponent(curFam)+'&genus='+encodeURIComponent(curGen)+'&variant='+encodeURIComponent(variant)+'&qty='+nq;
+function changeQty(variant, delta) {
+  var key = curFam+'||'+curGen+'||'+curSp+'||'+variant;
+  var nq = Math.max(0,(myQty[key]||0)+delta); myQty[key] = nq;
+  var el = document.getElementById('q_'+encId(variant)); if(el) el.textContent = nq;
+  var url = GAS_URL+'?action=updateQty&family='+encodeURIComponent(curFam)+'&genus='+encodeURIComponent(curGen)+'&species='+encodeURIComponent(curSp)+'&variant='+encodeURIComponent(variant)+'&qty='+nq;
   jsonpCall(url, function(){});
 }
 
-function renderCollection(){
-  var el=document.getElementById('collectionContent');
-  if(!myCollection.length){ el.innerHTML='<div class="no-variants">🌱 No plants yet.<br>Use Selector tab to add.</div>'; return; }
-  var byGenus={};
+function renderCollection() {
+  var el = document.getElementById('collectionContent');
+  if (!myCollection.length){ el.innerHTML = '<div class="no-variants">🌱 No plants yet.<br>Use Selector tab to add.</div>'; return; }
+  var byGenus = {};
   myCollection.forEach(function(key){
-    var p=key.split('||');
-    if(!byGenus[p[1]]) byGenus[p[1]]=[];
-    byGenus[p[1]].push({fam:p[0],gen:p[1],v:p[2],qty:myQty[key]||0});
+    var p = key.split('||');
+    if (!byGenus[p[1]]) byGenus[p[1]] = [];
+    byGenus[p[1]].push({fam:p[0], gen:p[1], sp:p[2], v:p[3], qty:myQty[key]||0});
   });
-  var html='';
+  var html = '';
   Object.keys(byGenus).sort().forEach(function(gen){
-    html+='<div class="col-card"><h3>'+gen+'</h3>';
+    html += '<div class="col-card"><h3>'+gen+'</h3>';
     byGenus[gen].forEach(function(item){
-      html+='<div class="col-item"><span class="col-name">'+item.v+'</span><div class="qty-wrap"><button class="qty-btn qty-minus" onclick="changeQtyCol(\''+esc(item.fam)+'\',\''+esc(gen)+'\',\''+esc(item.v)+'\',-1,this)">−</button><span class="qty-val">'+item.qty+'</span><button class="qty-btn qty-plus" onclick="changeQtyCol(\''+esc(item.fam)+'\',\''+esc(gen)+'\',\''+esc(item.v)+'\',1,this)">+</button></div></div>';
+      html += '<div class="col-item"><span class="col-name">'+item.v+'<br><small style="color:#888;font-size:11px;">'+item.sp+'</small></span>';
+      html += '<div class="qty-wrap"><button class="qty-btn qty-minus" onclick="changeQtyCol(\''+esc(item.fam)+'\',\''+esc(gen)+'\',\''+esc(item.sp)+'\',\''+esc(item.v)+'\',-1,this)">−</button><span class="qty-val">'+item.qty+'</span><button class="qty-btn qty-plus" onclick="changeQtyCol(\''+esc(item.fam)+'\',\''+esc(gen)+'\',\''+esc(item.sp)+'\',\''+esc(item.v)+'\',1,this)">+</button></div></div>';
     });
-    html+='</div>';
+    html += '</div>';
   });
-  el.innerHTML=html;
+  el.innerHTML = html;
 }
 
-function changeQtyCol(fam,gen,variant,delta,btn){
-  var key=fam+'||'+gen+'||'+variant;
-  var nq=Math.max(0,(myQty[key]||0)+delta); myQty[key]=nq;
-  btn.parentElement.querySelector('.qty-val').textContent=nq;
-  var url=GAS_URL+'?action=updateQty&family='+encodeURIComponent(fam)+'&genus='+encodeURIComponent(gen)+'&variant='+encodeURIComponent(variant)+'&qty='+nq;
+function changeQtyCol(fam, gen, sp, variant, delta, btn) {
+  var key = fam+'||'+gen+'||'+sp+'||'+variant;
+  var nq = Math.max(0,(myQty[key]||0)+delta); myQty[key] = nq;
+  btn.parentElement.querySelector('.qty-val').textContent = nq;
+  var url = GAS_URL+'?action=updateQty&family='+encodeURIComponent(fam)+'&genus='+encodeURIComponent(gen)+'&species='+encodeURIComponent(sp)+'&variant='+encodeURIComponent(variant)+'&qty='+nq;
   jsonpCall(url, function(){});
 }
 
-window.onload=init;
+window.onload = init;
 </script>
 </body>
 </html>
